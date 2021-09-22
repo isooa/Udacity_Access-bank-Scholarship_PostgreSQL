@@ -1,0 +1,79 @@
+--This is the start of Lesson 3
+
+--NULL means NO DATA
+
+--NULL is a property of the data, not a value
+
+/*NULLs - Expert Tip
+There are two common ways in which you are likely to encounter NULLs:
+
+NULLs frequently occur when performing a LEFT or RIGHT JOIN. You saw in the last lesson - when some rows in the left table of a left join are not matched with rows in the right table, those rows will contain some NULL values in the result set.
+
+
+NULLs can also occur from simply missing data in our database.*/
+
+SELECT COUNT(*)
+FROM accounts;
+
+SELECT COUNT(accounts.id)
+FROM accounts;
+
+SELECT COUNT(id)
+from accounts;
+
+--Count does not consider rows that have NULL VALUES
+
+select sum(poster_qty) from orders;
+
+select sum(standard_qty) from orders;
+
+Select sum(total_amt_usd) from orders;
+
+Select standard_amt_usd+gloss_amt_usd from orders;
+
+select standard_amt_usd/standard_qty from orders
+group by standard_amt_usd;
+
+select sum(standard_amt_usd)/sum(standard_qty)
+from orders;
+
+/*Expert Tip
+Functionally, MIN and MAX are similar to COUNT in that they can be used on non-numerical columns. Depending on the column type, MIN will return the lowest number, earliest date, or non-numerical value as early in the alphabet as possible. As you might suspect, MAX does the opposite—it returns the highest number, the latest date, or the non-numerical value closest alphabetically to “Z.”*/
+
+--Experimenting and understanding calculating median
+
+create table grade (
+score numeric
+);
+
+insert into grade values(55);
+insert into grade values(80);
+insert into grade values(95);
+insert into grade values(100);
+insert into grade values(99);
+insert into grade values(70);
+insert into grade values(60);
+insert into grade values (75);
+
+Select * from grade;
+
+-- this is an easy way using offset function, will most likely work odd values
+select score from grade order by score offset (select count(*) from grade)/2 limit 1;
+
+--Oracle has a direct median function
+Select Median(score) from grade;
+
+--Another way to solve in postgresql
+SELECT percentile_cont(0.5) WITHIN GROUP (ORDER BY score) FROM grade;
+
+-- Returning to Udacity exercise
+
+Select * from orders
+
+select min(occurred_at) from orders
+
+select occurred_at from orders
+order by occurred_at asc
+limit 1;
+
+select max(occurred_at) from orders;
