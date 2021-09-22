@@ -65,7 +65,7 @@ Select Median(score) from grade;
 
 --Another way to solve in postgresql
 SELECT percentile_cont(0.5) WITHIN GROUP (ORDER BY score) FROM grade;
-
+SELECT percentile_disc(0.5) WITHIN GROUP (ORDER BY score) FROM grade;
 -- Returning to Udacity exercise
 
 Select * from orders
@@ -77,3 +77,45 @@ order by occurred_at asc
 limit 1;
 
 select max(occurred_at) from orders;
+
+select occurred_at from orders
+order by occurred_at desc
+limit 1;
+
+SELECT AVG(standard_qty) mean_standard, AVG(gloss_qty) mean_gloss, 
+           AVG(poster_qty) mean_poster, AVG(standard_amt_usd) mean_standard_usd, 
+           AVG(gloss_amt_usd) mean_gloss_usd, AVG(poster_amt_usd) mean_poster_usd
+FROM orders;
+
+SELECT *
+FROM (SELECT total_amt_usd
+      FROM orders
+      ORDER BY total_amt_usd
+      LIMIT 3457) AS Table1
+ORDER BY total_amt_usd DESC
+LIMIT 2;
+
+--Moving to group by
+
+-- Any column in the SELECT statement that is not within an aggregator must be in the GROUP BY clause.
+
+/*GROUP BY - Expert Tip
+Before we dive deeper into aggregations using GROUP BY statements, it is worth noting that SQL evaluates the aggregations before the LIMIT clause. If you don’t group by any columns, you’ll get a 1-row result—no problem there. If you group by a column with enough unique values that it exceeds the LIMIT number, the aggregates will be calculated, and then some rows will simply be omitted from the results.
+
+This is actually a nice way to do things because you know you’re going to get the correct aggregates. If SQL cuts the table down to 100 rows, then performed the aggregations, your results would be substantially different. The above query’s results exceed 100 rows, so it’s a perfect example. In the next concept, use the SQL environment to try removing the LIMIT and running it again to see what changes.*/
+
+
+select a.name, min (o.occurred_at) from
+orders o
+join accounts a 
+on a.id=o.account_id
+group by a.name
+order by min(occurred_at) asc
+limit 1;
+
+select a.name, sum (o.total_amt_usd) from
+orders o
+join accounts a 
+on a.id=o.account_id
+group by a.name
+order by sum(o.total_amt_usd);
