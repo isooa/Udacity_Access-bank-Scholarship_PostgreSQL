@@ -139,11 +139,7 @@ GROUP BY a.name;
 
 
 
-select * from web_events;
-select * from accounts
-select * from orders
-select * from region
-select * from sales_reps;
+
 
 
 
@@ -219,3 +215,70 @@ As with ORDER BY, you can substitute numbers for column names in the GROUP BY cl
 
 
 A reminder here that any column that is not within an aggregation must show up in your GROUP BY statement. If you forget, you will likely get an error. However, in the off chance that your query does work, you might not like the results!*/
+
+
+
+select a.name, avg(o.standard_qty), avg(o.gloss_qty), avg(o.poster_qty)
+from orders o
+join accounts a
+on a.id=o.account_id
+group by a.name
+
+select a.name, avg(o.standard_amt_usd), avg(o.gloss_amt_usd), avg(o.poster_amt_usd)
+from orders o
+join accounts a
+on a.id=o.account_id
+group by a.name
+
+select s.name, w.channel, count(w.channel)
+from sales_reps s
+join accounts a
+on a.sales_rep_id=s.id
+join web_events w 
+on w.account_id=a.id
+group by s.name,w.channel
+order by s.name desc, count(w.channel) asc
+eb_events w 
+on w.account_id=a.id
+group by r.name, w.channel
+
+/*DISTINCT - Expert Tip
+It’s worth noting that using DISTINCT, particularly in aggregations, can slow your queries down quite a bit.*/
+
+
+select r.name, w.channel, count(w.channel)
+from region r
+join sales_reps s
+on r.id=s.region_id
+join accounts a
+on a.sales_rep_id=s.id
+join w
+
+select id,standard_amt_usd, gloss_amt_usd, poster_amt_usd, total_amt_usd from orders
+
+select sum(total_amt_usd) from orders
+where id between 1 and 5;
+select a.id, count(r.name)
+from region r
+join sales_reps s
+on s.region_id=r.id
+join accounts a
+on a.sales_rep_id=s.id
+group by a.id
+order by count(r.name) desc
+
+select count(distinct s.name), count(s.name)
+from accounts a
+join sales_reps s
+on s.id=a.sales_rep_id
+
+
+--Having clause
+
+select * from web_events;
+select * from accounts
+select * from orders
+select * from region
+select * from sales_reps;
+
+				
