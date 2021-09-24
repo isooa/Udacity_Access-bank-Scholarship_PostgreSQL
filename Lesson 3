@@ -281,4 +281,134 @@ select * from orders
 select * from region
 select * from sales_reps;
 
-				
+
+select s.name, count(*)
+from sales_reps s
+join accounts a
+on s.id= a.sales_rep_id
+group by s.name
+having count(*)>5;
+
+select a.id, count(*)
+from accounts a
+join orders o
+on a.id=o.account_id
+group by a.id
+having count(*)>20;
+
+select a.id, count(*)
+from accounts a
+join orders o
+on a.id=o.account_id
+group by a.id
+order by count(*) desc
+limit 1;
+
+select a.id, sum(o.total_amt_usd)
+from accounts a
+join orders o
+on a.id=o.account_id
+group by a.id
+having sum(o.total_amt_usd) > 30000
+order by sum(total_amt_usd) desc
+
+select a.id, sum(o.total_amt_usd)
+from accounts a
+join orders o
+on a.id=o.account_id
+group by a.id
+having sum(o.total_amt_usd) < 1000
+order by sum(total_amt_usd) desc
+
+select a.id, sum(o.total_amt_usd)
+from accounts a
+join orders o
+on a.id=o.account_id
+group by a.id
+order by sum(total_amt_usd) desc
+limit 1
+
+select a.id, sum(o.total_amt_usd)
+from accounts a
+join orders o
+on a.id=o.account_id
+group by a.id
+order by sum(total_amt_usd) asc
+limit 1
+
+select a.id, w.channel, count(*)
+from accounts a
+join web_events w
+on a.id = w.account_id
+group by a.id,w.channel
+having w.channel = 'facebook'
+and count(*)>6
+order by count(*) desc;
+
+select a.id, w.channel, count(*)
+from accounts a
+join web_events w
+on a.id = w.account_id
+group by a.id,w.channel
+having w.channel = 'facebook'
+and count(*)>6
+order by count(*) desc
+limit 1;
+
+select w.channel, count(*)
+from accounts a
+join web_events w
+on a.id = w.account_id
+group by w.channel
+order by count(*) desc
+limit 1;
+
+--Date functions
+
+select date_part ('year', occurred_at), sum(total_amt_usd)
+from orders
+group by 1
+order by 2 desc
+
+select date_part ('month', occurred_at), sum(total_amt_usd)
+from orders
+WHERE occurred_at BETWEEN '2014-01-01' AND '2017-01-01'
+group by 1
+order by 2 desc;
+
+select date_part ('year', occurred_at), sum(total)
+from orders
+group by 1
+order by 2 desc;
+
+select date_part ('month', occurred_at), sum(total)
+from orders
+WHERE occurred_at BETWEEN '2014-01-01' AND '2017-01-01'
+group by 1
+order by 2 desc;
+
+
+select a.name, date_trunc ('month', o.occurred_at), sum(o.gloss_amt_usd)
+from orders o
+join accounts a
+on a.id = o.account_id
+where a.name = 'Walmart'
+group by 1,2
+order by 3 desc
+limit 1;
+
+--CASE statements
+
+select account_id, total_amt_usd, case when total_amt_usd >=3000 then 'Large' else 'Small' end
+from orders
+order by 2 desc;
+
+select total, case when total >=2000 then 'at least 2000' when total < 2000 or total >=1000 then 'between 1000 and 2000' else 'Less than 1000' end
+from orders
+order by 1 asc;
+
+
+
+
+
+
