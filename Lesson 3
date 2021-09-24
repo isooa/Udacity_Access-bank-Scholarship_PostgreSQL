@@ -407,6 +407,43 @@ select total, case when total >=2000 then 'at least 2000' when total < 2000 or t
 from orders
 order by 1 asc;
 
+select a.name, sum(total_amt_usd),case when sum(total_amt_usd)>200000 then 'Top level'
+when sum(total_amt_usd) between 100000 and 200000 then 'Second level'
+else 'Lowest level' end
+from accounts a
+join orders o
+on a.id=o.account_id
+group by 1
+
+select a.name, sum(total_amt_usd),case when sum(total_amt_usd)>200000 then 'Top level'
+when sum(total_amt_usd) between 100000 and 200000 then 'Second level'
+else 'Lowest level' end
+from accounts a
+join orders o
+on a.id=o.account_id
+where date_part ('year', occurred_at) in ('2016','2017')
+group by 1
+
+select s.name, count(o.total), case when count(o.total)>200 then 'Top' else 'Not' end
+from sales_reps s
+join accounts a
+on s.id=a.sales_rep_id
+join orders o
+on o.account_id=a.id
+group by 1
+order by count(o.total) desc
+
+select s.name, count(o.total), sum(total_amt_usd),
+case when count(o.total)>200 or sum(o.total_amt_usd)>750000 then 'Top' 
+when count(o.total)>150 or sum(o.total_amt_usd)>500000 then 'Middle'
+else 'Low' end
+from sales_reps s
+join accounts a
+on s.id=a.sales_rep_id
+join orders o
+on o.account_id=a.id
+group by 1
+order by 3 desc
 
 
 
