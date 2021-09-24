@@ -7,3 +7,11 @@ from web_events
 group by 1,2) sub
 group by 1
 order by 2 desc
+
+select channel,a, avg(c) as avg_event_count
+from
+(select date_trunc('day', occurred_at) a, channel, count(*) c
+from web_events
+group by 1,2) sub
+group by 1,2
+order by 3 desc
